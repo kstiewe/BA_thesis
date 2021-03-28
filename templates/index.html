@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="app-wrapper">
+    <div class="text-section">
+        <h1>Witaj na stronie mojego projektu licencjackiego</h1>
+        <p>
+            Ten moduł programu służy ocenie tego, jak wybierasz osoby na podstawie ich wyglądu fizycznego. Zaznaczaj czy
+            podobają Ci się osoby na zdjęciach, aż uzyskasz wyniki
+        </p>
+    </div>
+    <div class="container">
+        <div class="wrapper">
+            <div class="button like" onclick="console.log('siema B)')">LIKE</div>
+            <div class="image-container">
+                <img src="{% static 'img/000200.jpg' %}" alt="" id="image"/>
+            </div>
+            <div class="button dislike">DISLIKE</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
