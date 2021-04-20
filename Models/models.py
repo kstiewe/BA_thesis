@@ -3,7 +3,6 @@ import json
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
-
 # Create your models here.
 from Licencjat.settings import STATICFILES_DIRS
 
@@ -11,7 +10,8 @@ from Licencjat.settings import STATICFILES_DIRS
 class UserModel(models.Model):
     id = models.AutoField(primary_key=True)
     ip = models.CharField(max_length=39, null=False)
-    selection_count = models.IntegerField(null=True)
+    # selection_count = models.IntegerField(null=True)
+    has_finished = models.BooleanField(default=False)
 
 
 class SelectionModel(models.Model):
