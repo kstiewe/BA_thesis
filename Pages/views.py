@@ -20,7 +20,7 @@ def homepageView(request, *args, **kwargs):
         context = {"user": request.user}
     else:
         context = {}
-    print(get_client_ip(request))
+    context["ip"] = get_client_ip(request)
     return render(request, "index.html", context)
 
 
