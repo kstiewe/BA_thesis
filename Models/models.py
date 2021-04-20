@@ -23,7 +23,7 @@ class SelectionModel(models.Model):
 
 class PhotoModel(models.Model):
     id = models.AutoField(primary_key=True)
-    file = models.ImageField(null=True, upload_to=STATICFILES_DIRS[0] + "/img/")
+    file = models.CharField(max_length=10)
     attributes = models.CharField(max_length=200)
     landmarks = models.CharField(max_length=200)
 

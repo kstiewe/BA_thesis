@@ -39,14 +39,9 @@ def mealsView(request, *args, **kwargs):
             attr_list.append(list(line.rstrip().split()))
     for x in range(202599):  # 202599
         f_name = attr_list[x].pop(0)
-        meal_data = PhotoModel(
-            file=File(
-                open(
-                    "C:/Users/kryst/PycharmProjects/BA_thesis/img_align_celeba/" + f_name,
-                    'rb'))
-        )
+        meal_data = PhotoModel()
+        meal_data.file = str(x + 1).zfill(6) + ".txt"
         meal_data.set_attributes([int(x) for x in attr_list[x]])
         meal_data.set_landmarks(land_list[x])
-        meal_data.file.name = f_name
         meal_data.save()
     return redirect("home")
