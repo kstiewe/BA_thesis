@@ -37,10 +37,10 @@ def mealsView(request, *args, **kwargs):
     with open(attr_loc, encoding='utf-8') as f:
         for line in f.readlines():
             attr_list.append(list(line.rstrip().split()))
-    for x in range(202599):  # 202599
+    for x in range(45000):  # 202599
         f_name = attr_list[x].pop(0)
         meal_data = PhotoModel()
-        meal_data.file = str(x + 1).zfill(6) + ".txt"
+        meal_data.file = f_name + ".txt"
         meal_data.set_attributes([int(x) for x in attr_list[x]])
         meal_data.set_landmarks(land_list[x])
         meal_data.save()
