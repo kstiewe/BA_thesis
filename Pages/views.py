@@ -28,6 +28,7 @@ def homepageView(request, *args, **kwargs):
     else:
         user_model_instance = list(UserModel.objects.filter(ip__exact=user_ip))[
             0]
+    user_model_instance.save()
     if not user_model_instance.has_finished:
         if list(SelectionModel.objects.filter(selection=None,
                                               user__exact=user_model_instance)):
