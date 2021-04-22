@@ -22,27 +22,38 @@ def homepageView(request, *args, **kwargs):
     user_ip = get_client_ip(request)
     context = {}
     photolist = list(PhotoModel.objects.all())
-    if list(UserModel.objects.filter(ip__exact=user_ip)) == []:
+    if not list(UserModel.objects.filter(ip__exact=user_ip)):
         user_model_instance = UserModel()
         user_model_instance.ip = user_ip
-        user_model_instance.save()
     else:
         user_model_instance = list(UserModel.objects.filter(ip__exact=user_ip))[
             0]
-    if list(SelectionModel.objects.filter(selection=None,
-                                          user__exact=user_model_instance)) != []:
-        selection = list(SelectionModel.objects.filter(selection=None,
-                                                       user__exact=user_model_instance))[
-            0]
-        photo = selection.photo
+    if not user_model_instance.has_finished:
+        if list(SelectionModel.objects.filter(selection=None,
+                                              user__exact=user_model_instance)):
+            selection = list(SelectionModel.objects.filter(selection=None,
+                                                           user__exact=user_model_instance))[
+                0]
+            photo = selection.photo
+        else:
+            photo = choice(photolist)
+            selection = SelectionModel()
+            selection.photo = photo
+            selection.user = user_model_instance
+        if request.method == 'POST' and 'likebutton' in request.POST:
+            selection.selection = True
+            user_model_instance.selection_count += 1
+        if request.method == 'POST' and 'dislikebutton' in request.POST:
+            selection.selection = False
+            user_model_instance.selection_count += 1
+        if user_model_instance.selection_count == 100:
+            user_model_instance.has_finished = True
+        selection.save()
+        user_model_instance.save()
+        context["photo_loc"] = "img/" + photo.file
+        return render(request, "index.html", context)
     else:
-        photo = choice(photolist)
-        selection = SelectionModel()
-        selection.photo = photo
-        selection.user = user_model_instance
-    selection.save()
-    context["photo_loc"] = "img/" + photo.file
-    return render(request, "index.html", context)
+        return render(request, "base.html", context)
 
 
 def mealsView(request, *args, **kwargs):

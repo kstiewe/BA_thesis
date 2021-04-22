@@ -11,11 +11,17 @@
     </div>
     <div class="container">
         <div class="wrapper">
-            <div class="button like" onclick="console.log('siema B)')">LIKE</div>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="button like" name="likebutton">LIKE</button>
+            </form>
             <div class="image-container">
                 <img src="{% static photo_loc %}" alt="" id="image"/>
             </div>
-            <div class="button dislike">DISLIKE</div>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="button dislike" name="dislikebutton">DISLIKE</button>
+            </form>
         </div>
     </div>
 </div>
