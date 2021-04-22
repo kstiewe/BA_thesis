@@ -1,9 +1,12 @@
+from random import choice
+
 from django.core.files import File
+from django.db.models import QuerySet
 from django.shortcuts import render, redirect
 
 # Create your views here.
 from Licencjat.settings import STATICFILES_DIRS
-from Models.models import PhotoModel
+from Models.models import PhotoModel, UserModel, SelectionModel
 
 
 def get_client_ip(request):
@@ -16,11 +19,29 @@ def get_client_ip(request):
 
 
 def homepageView(request, *args, **kwargs):
-    if request.user.is_authenticated:
-        context = {"user": request.user}
+    user_ip = get_client_ip(request)
+    context = {}
+    photolist = list(PhotoModel.objects.all())
+    if list(UserModel.objects.filter(ip__exact=user_ip)) == []:
+        user_model_instance = UserModel()
+        user_model_instance.ip = user_ip
+        user_model_instance.save()
     else:
-        context = {}
-    context["ip"] = get_client_ip(request)
+        user_model_instance = list(UserModel.objects.filter(ip__exact=user_ip))[
+            0]
+    if list(SelectionModel.objects.filter(selection=None,
+                                          user__exact=user_model_instance)) != []:
+        selection = list(SelectionModel.objects.filter(selection=None,
+                                                       user__exact=user_model_instance))[
+            0]
+        photo = selection.photo
+    else:
+        photo = choice(photolist)
+        selection = SelectionModel()
+        selection.photo = photo
+        selection.user = user_model_instance
+    selection.save()
+    context["photo_loc"] = "img/" + photo.file
     return render(request, "index.html", context)
 
 
