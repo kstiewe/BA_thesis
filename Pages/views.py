@@ -40,7 +40,7 @@ def mealsView(request, *args, **kwargs):
     for x in range(202599):  # 202599
         f_name = attr_list[x].pop(0)
         meal_data = PhotoModel()
-        meal_data.file = f_name + ".txt"
+        meal_data.file = f_name
         meal_data.set_attributes([int(x) for x in attr_list[x]])
         meal_data.set_landmarks(land_list[x])
         meal_data.save()

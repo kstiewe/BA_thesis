@@ -10,7 +10,7 @@ from Licencjat.settings import STATICFILES_DIRS
 class UserModel(models.Model):
     id = models.AutoField(primary_key=True)
     ip = models.CharField(max_length=39, null=False)
-    # selection_count = models.IntegerField(null=True)
+    selection_count = models.IntegerField(null=False, default="0")
     has_finished = models.BooleanField(default=False)
 
 
@@ -23,7 +23,7 @@ class SelectionModel(models.Model):
 
 class PhotoModel(models.Model):
     id = models.AutoField(primary_key=True)
-    file = models.CharField(max_length=10)
+    file = models.CharField(max_length=10, default="000001.jpg")
     attributes = models.CharField(max_length=200)
     landmarks = models.CharField(max_length=200)
 
