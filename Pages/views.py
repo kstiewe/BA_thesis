@@ -51,6 +51,11 @@ def homepageView(request, *args, **kwargs):
             user_model_instance.has_finished = True
         user_model_instance.save()
         selection.save()
+        if request.method == 'POST':
+            photo = choice(photolist)
+            selection = SelectionModel()
+            selection.photo = photo
+            selection.user = user_model_instance
         context["photo_loc"] = "img/" + photo.file
         return render(request, "index.html", context)
     else:
