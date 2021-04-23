@@ -46,6 +46,7 @@ def homepageView(request, *args, **kwargs):
             if user_model_instance.selection_count == 100:
                 user_model_instance.has_finished = True
                 user_model_instance.save()
+                context["tbi"] = "TO BE IMPLEMENTED"
                 return render(request, "base.html", context)
             selection = SelectionModel.objects.filter(
                 user__exact=user_model_instance,
@@ -55,6 +56,7 @@ def homepageView(request, *args, **kwargs):
             100 - int(user_model_instance.selection_count))
         return render(request, "index.html", context)
     else:
+        context["tbi"] = "TO BE IMPLEMENTED"
         return render(request, "base.html", context)
     # user_model_instance.save()
     #
