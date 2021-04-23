@@ -103,7 +103,10 @@ p {
 #left_counter {
     font-size: 120%;
     font-family: Lucida;
+    justify-content:center;
+    align-items: center;
     display: flex;
+    height: 100%;
     margin: 5%;
     width: 50%;
 }
@@ -111,15 +114,26 @@ p {
 
 #right_github {
     display: flex;
+    justify-content:center;
+    align-items: center;
+    overflow: hidden;
     margin: 5%;
+    height: 100%;
     width: 50%;
 }
 
 
-#right_github img {
+#gitimg {
     display: flex;
-    float: right;
-    max-width: 25%;
+    height: 100%;
+    width: 100%;
+    margin-left: 90%;
+    margin-top: 3%;
+    object-fit: contain;
+}
+
+#gitimg img{
+    height: 80%;
 }
 
 
