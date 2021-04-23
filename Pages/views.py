@@ -43,7 +43,7 @@ def homepageView(request, *args, **kwargs):
             user_model_instance.selection_count += 1
             user_model_instance.save()
             selection.save()
-            if user_model_instance.selection_count == '100':
+            if user_model_instance.selection_count == 100:
                 user_model_instance.has_finished = True
                 user_model_instance.save()
                 return render(request, "base.html", context)
