@@ -21,18 +21,18 @@ def get_client_ip(request):
 def homepageView(request, *args, **kwargs):
     user_ip = get_client_ip(request)
     context = {}
-    photolist = list(PhotoModel.objects.all())
-    if not list(UserModel.objects.filter(ip__exact=user_ip)):
+    photolist = PhotoModel.objects.all()
+    if not UserModel.objects.filter(ip__exact=user_ip):
         user_model_instance = UserModel()
         user_model_instance.ip = user_ip
     else:
-        user_model_instance = list(UserModel.objects.filter(ip__exact=user_ip))[
+        user_model_instance = UserModel.objects.filter(ip__exact=user_ip)[
             0]
     user_model_instance.save()
 
     if request.method == 'POST' and 'likebutton' in request.POST:
-        selection = list(SelectionModel.objects.filter(selection=None,
-                                                       user__exact=user_model_instance))[
+        selection = SelectionModel.objects.filter(selection=None,
+                                                  user__exact=user_model_instance)[
             0]
         selection.selection = True
         user_model_instance.selection_count += 1
@@ -41,8 +41,8 @@ def homepageView(request, *args, **kwargs):
         request.method = "GET"
 
     if request.method == 'POST' and 'dislikebutton' in request.POST:
-        selection = list(SelectionModel.objects.filter(selection=None,
-                                                       user__exact=user_model_instance))[
+        selection = SelectionModel.objects.filter(selection=None,
+                                                  user__exact=user_model_instance)[
             0]
         selection.selection = False
         user_model_instance.selection_count += 1
@@ -54,10 +54,10 @@ def homepageView(request, *args, **kwargs):
         user_model_instance.has_finished = True
 
     if not user_model_instance.has_finished:
-        if list(SelectionModel.objects.filter(selection=None,
-                                              user__exact=user_model_instance)):
-            selection = list(SelectionModel.objects.filter(selection=None,
-                                                           user__exact=user_model_instance))[
+        if SelectionModel.objects.filter(selection=None,
+                                         user__exact=user_model_instance):
+            selection = SelectionModel.objects.filter(selection=None,
+                                                      user__exact=user_model_instance)[
                 0]
             photo = selection.photo
         else:
