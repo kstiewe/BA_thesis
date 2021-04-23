@@ -38,6 +38,7 @@ def homepageView(request, *args, **kwargs):
         user_model_instance.selection_count += 1
         user_model_instance.save()
         selection.save()
+        request.method = "GET"
 
     if request.method == 'POST' and 'dislikebutton' in request.POST:
         selection = list(SelectionModel.objects.filter(selection=None,
@@ -47,6 +48,7 @@ def homepageView(request, *args, **kwargs):
         user_model_instance.selection_count += 1
         user_model_instance.save()
         selection.save()
+        request.method = "GET"
 
     if user_model_instance.selection_count == 100:
         user_model_instance.has_finished = True
@@ -66,6 +68,8 @@ def homepageView(request, *args, **kwargs):
         user_model_instance.save()
         selection.save()
         context["photo_loc"] = "img/" + photo.file
+        context["selections_left"] = str(
+            100 - int(user_model_instance.selection_count))
         return render(request, "index.html", context)
     else:
         return render(request, "base.html", context)
