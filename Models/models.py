@@ -13,7 +13,6 @@ class UserModel(models.Model):
     selection_count = models.IntegerField(null=False, default="0")
     has_finished = models.BooleanField(default=False)
 
-
 class SelectionModel(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey('UserModel', on_delete=models.CASCADE)
