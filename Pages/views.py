@@ -31,10 +31,10 @@ def homepageView(request, *args, **kwargs):
     else:
         user_model_instance = UserModel.objects.filter(ip__exact=user_ip)[
             0]
-    if int(user_model_instance.selection_count) < 100:
+    if not user_model_instance.has_finished:
         selection = \
-        SelectionModel.objects.filter(user__exact=user_model_instance,
-                                      selection=None)[0]
+            SelectionModel.objects.filter(user__exact=user_model_instance,
+                                          selection=None)[0]
         if request.method == 'POST':
             if 'likebutton' in request.POST:
                 selection.selection = True
@@ -43,9 +43,12 @@ def homepageView(request, *args, **kwargs):
             user_model_instance.selection_count += 1
             user_model_instance.save()
             selection.save()
-            selection = \
-            SelectionModel.objects.filter(user__exact=user_model_instance,
-                                          selection=None)[0]
+            if user_model_instance.selection_count == '100':
+                user_model_instance.has_finished = True
+                return render(request, "base.html", context)
+            selection = SelectionModel.objects.filter(
+                user__exact=user_model_instance,
+                selection=None)[0]
         context["photo_loc"] = "img/" + selection.photo.file
         context["selections_left"] = str(
             100 - int(user_model_instance.selection_count))
