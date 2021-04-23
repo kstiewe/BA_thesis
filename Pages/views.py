@@ -88,7 +88,7 @@ def mealsView(request, *args, **kwargs):
     with open(attr_loc, encoding='utf-8') as f:
         for line in f.readlines():
             attr_list.append(list(line.rstrip().split()))
-    for x in range(100):  # 202599
+    for x in range(202599):  # 202599
         f_name = attr_list[x].pop(0)
         meal_data = PhotoModel()
         meal_data.file = f_name
