@@ -41,17 +41,16 @@ def homepageView(request, *args, **kwargs):
             if user_model_instance.selection_count == 100:
                 user_model_instance.has_finished = True
                 user_model_instance.save()
-                context["tbi"] = "TO BE IMPLEMENTED"
                 return redirect("results")
             selection = SelectionModel.objects.filter(
                 user__exact=user_model_instance,
                 selection=None)[0]
         context["photo_loc"] = "img/" + selection.photo.file
-        context["selections_left"] = str(
-            100 - int(user_model_instance.selection_count))
+        context["selections_left"] = "Zostało Ci " + str(
+            100 - int(
+                user_model_instance.selection_count)) + " zdjęć do wybrania."
         return render(request, "index.html", context)
     else:
-        context["tbi"] = "TO BE IMPLEMENTED"
         return redirect("results")
 
 
@@ -71,25 +70,52 @@ def resultsView(request, *args, **kwargs):
     if not user_model_instance.has_finished_results:
         algorithm = \
         AlgorithmModel.objects.filter(user__exact=user_model_instance,
-                                      selection=None, photo=None)[
+                                      selection=None)[
             0]
-        if algorithm.type == '1':
-            result = linear_adding_algorithm(user_model_instance, algorithm)
-        elif algorithm.type == '2':
+        if algorithm.type == '1' and algorithm.photo is None:
+            linear_adding_algorithm(user_model_instance, algorithm)
+        elif algorithm.type == '2' and algorithm.photo is None:
             exponential_adding_algorithm(user_model_instance, algorithm)
-        elif algorithm.type == '3':
+        elif algorithm.type == '3' and algorithm.photo is None:
             selection_average_algorithm(user_model_instance, algorithm)
-        elif algorithm.type == '4':
+        elif algorithm.type == '4' and algorithm.photo is None:
             average_human_offset_algorithm(user_model_instance, algorithm)
-        elif algorithm.type == '5':
+        elif algorithm.type == '5' and algorithm.photo is None:
             attribute_weights_on_test_sample_algorithm(user_model_instance,
                                                        algorithm)
-        elif algorithm.type == '6':
+        elif algorithm.type == '6' and algorithm.photo is None:
             exponential_attribute_weights_on_test_sample_algorithm(
                 user_model_instance, algorithm)
         if request.method == 'POST':
-            pass
-        context["photo_loc"] = "img/" + result.file
+            if 'likebutton' in request.POST:
+                algorithm.selection = True
+            elif 'dislikebutton' in request.POST:
+                algorithm.selection = False
+            algorithm.save()
+            if not AlgorithmModel.objects.filter(
+                    user__exact=user_model_instance,
+                    selection=None):
+                user_model_instance.has_finished_results = True
+                user_model_instance.save()
+                return render(request, "base.html", context)
+            algorithm = \
+                AlgorithmModel.objects.filter(user__exact=user_model_instance,
+                                              selection=None)[0]
+            if algorithm.type == '1' and algorithm.photo is None:
+                linear_adding_algorithm(user_model_instance, algorithm)
+            elif algorithm.type == '2' and algorithm.photo is None:
+                exponential_adding_algorithm(user_model_instance, algorithm)
+            elif algorithm.type == '3' and algorithm.photo is None:
+                selection_average_algorithm(user_model_instance, algorithm)
+            elif algorithm.type == '4' and algorithm.photo is None:
+                average_human_offset_algorithm(user_model_instance, algorithm)
+            elif algorithm.type == '5' and algorithm.photo is None:
+                attribute_weights_on_test_sample_algorithm(user_model_instance,
+                                                           algorithm)
+            elif algorithm.type == '6' and algorithm.photo is None:
+                exponential_attribute_weights_on_test_sample_algorithm(
+                    user_model_instance, algorithm)
+        context["photo_loc"] = "img/" + algorithm.photo.file
         return render(request, "results.html", context)
     else:
         return render(request, "base.html", context)
