@@ -97,7 +97,7 @@ def resultsView(request, *args, **kwargs):
                     selection=None):
                 user_model_instance.has_finished_results = True
                 user_model_instance.save()
-                return render(request, "base.html", context)
+                return render(request, "thankyou.html", context)
             algorithm = \
                 AlgorithmModel.objects.filter(user__exact=user_model_instance,
                                               selection=None)[0]
@@ -118,7 +118,7 @@ def resultsView(request, *args, **kwargs):
         context["photo_loc"] = "img/" + algorithm.photo.file
         return render(request, "results.html", context)
     else:
-        return render(request, "base.html", context)
+        return render(request, "thankyou.html", context)
 
 
 def mealsView(request, *args, **kwargs):
