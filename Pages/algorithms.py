@@ -137,9 +137,9 @@ def attribute_weights_on_test_sample_algorithm(user_model_instance, algorithm):
         attributes = photo.get_attributes()
         for x in range(40):
             if attributes[x] == 1:
-                score += attributes[x] * (plusone[x][0] / plusone[x][1])
+                score += (plusone[x][0] / plusone[x][1])
             elif attributes[x] == -1:
-                score += attributes[x] * (minusone[x][0] / minusone[x][1])
+                score += (minusone[x][0] / minusone[x][1])
         if score > biggest_score:
             biggest_score = score
             best_list = [photo]
@@ -175,13 +175,11 @@ def exponential_attribute_weights_on_test_sample_algorithm(user_model_instance,
         attributes = photo.get_attributes()
         for x in range(40):
             if attributes[x] == 1:
-                score += attributes[x] * (
-                            plusone[x][0] * plusone[x][0] * plusone[x][0] /
-                            plusone[x][1])
+                score += (plusone[x][0] * plusone[x][0] * plusone[x][0] /
+                          plusone[x][1])
             elif attributes[x] == -1:
-                score += attributes[x] * (
-                            minusone[x][0] * minusone[x][0] * minusone[x][0] /
-                            minusone[x][1])
+                score += (minusone[x][0] * minusone[x][0] * minusone[x][0] /
+                          minusone[x][1])
         if score > biggest_score:
             biggest_score = score
             best_list = [photo]
