@@ -1,10 +1,6 @@
 import json
 
-from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-
-# Create your models here.
-from Licencjat.settings import STATICFILES_DIRS
 
 
 class AlgorithmModel(models.Model):
@@ -14,7 +10,9 @@ class AlgorithmModel(models.Model):
         ("3", "SelectionAverage"),
         ("4", "AverageHumanOffset"),
         ("5", "AttributeWeightsOnTestSample"),
-        ("6", "ExponentialAttributeWeightsOnTestSample")
+        ("6", "ExponentialAttributeWeightsOnTestSample"),
+        ("7", "AverageLandscape"),
+        ("8", "E.A.W.O.T.S.-AverageLandscape")
     )
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey('UserModel', on_delete=models.CASCADE)
@@ -22,12 +20,14 @@ class AlgorithmModel(models.Model):
     photo = models.ForeignKey('PhotoModel', on_delete=models.CASCADE, null=True)
     selection = models.BooleanField(null=True)
 
+
 class UserModel(models.Model):
     id = models.AutoField(primary_key=True)
     ip = models.CharField(max_length=39, null=False)
     selection_count = models.IntegerField(null=False, default="0")
     has_finished = models.BooleanField(default=False)
     has_finished_results = models.BooleanField(default=False)
+
 
 class SelectionModel(models.Model):
     id = models.AutoField(primary_key=True)

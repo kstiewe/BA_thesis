@@ -5,10 +5,13 @@ from Models.models import PhotoModel, SelectionModel
 PHOTOS = PhotoModel.objects.all()
 
 
+# DONE
+# TODO: REFACTOR
 def linear_adding_algorithm(user_model_instance, algorithm):
     selections = SelectionModel.objects.filter(user__exact=user_model_instance)
     photos_ranked = [0] * 40
     for selection in selections:
+        # IF SELECTION IS TRUE
         if selection.selection:
             photos_ranked = [x + y for x, y in zip(photos_ranked,
                                                    selection.photo.get_attributes())]
@@ -29,6 +32,8 @@ def linear_adding_algorithm(user_model_instance, algorithm):
     algorithm.save()
 
 
+# DONE
+# TODO: REFACTOR
 def exponential_adding_algorithm(user_model_instance, algorithm):
     selections = SelectionModel.objects.filter(user__exact=user_model_instance)
     photos_ranked = [0] * 40
@@ -54,47 +59,20 @@ def exponential_adding_algorithm(user_model_instance, algorithm):
     algorithm.save()
 
 
+# DONE
+# TODO: REFACTOR
 def selection_average_algorithm(user_model_instance, algorithm):
     selections = SelectionModel.objects.filter(user__exact=user_model_instance)
     photos_ranked = [0] * 40
+    liked = 0
     for selection in selections:
         if selection.selection:
             photos_ranked = [x + y for x, y in zip(photos_ranked,
                                                    selection.photo.get_attributes())]
-        else:
-            photos_ranked = [x - y for x, y in zip(photos_ranked,
-                                                   selection.photo.get_attributes())]
-    for i in range(len(photos_ranked)):
-        if photos_ranked[i] > 0:
-            photos_ranked[i] = 1
-        else:
-            photos_ranked[i] = -1
-    best_list = []
-    biggest_score = 0
-    for photo in PHOTOS:
-        score = 0
-        for x, y in zip(photo.get_attributes(), photos_ranked):
-            if x == y:
-                score += 1
-        if score > biggest_score:
-            biggest_score = score
-            best_list = [photo]
-        elif score == biggest_score:
-            best_list.append(photo)
-    algorithm.photo = choice(best_list)
-    algorithm.save()
-
-
-def average_human_offset_algorithm(user_model_instance, algorithm):
-    selections = SelectionModel.objects.filter(user__exact=user_model_instance)
-    photos_ranked = [0] * 40
-    for selection in selections:
-        if selection.selection:
-            photos_ranked = [x + y for x, y in zip(photos_ranked,
-                                                   selection.photo.get_attributes())]
-        else:
-            photos_ranked = [x - y for x, y in zip(photos_ranked,
-                                                   selection.photo.get_attributes())]
+            liked += 1
+    if liked > 0:
+        for i in range(len(photos_ranked)):
+            photos_ranked[i] /= liked
     best_list = []
     biggest_score = -1000000
     for photo in PHOTOS:
@@ -109,6 +87,43 @@ def average_human_offset_algorithm(user_model_instance, algorithm):
     algorithm.save()
 
 
+# DONE
+# TODO: REFACTOR
+def average_human_offset_algorithm(user_model_instance, algorithm):
+    selections = SelectionModel.objects.filter(user__exact=user_model_instance)
+    photos_ranked = [0] * 40
+    average_human = [0] * 40
+    for photo in PHOTOS:
+        average_human = [x + y for x, y in zip(average_human,
+                                               photo.get_attributes())]
+    photos_len = len(PHOTOS)
+    for i in range(len(photos_ranked)):
+        average_human[i] = average_human[i] / photos_len + 1
+    for selection in selections:
+        if selection.selection:
+            photos_ranked = [x + y for x, y in zip(photos_ranked,
+                                                   selection.photo.get_attributes())]
+        else:
+            photos_ranked = [x - y for x, y in zip(photos_ranked,
+                                                   selection.photo.get_attributes())]
+    best_list = []
+    biggest_score = -10000000
+    for photo in PHOTOS:
+        score = sum(
+            [x * (y / z) for x, y, z in
+             zip(photos_ranked, photo.get_attributes(), average_human) if
+             z > 0])
+        if score > biggest_score:
+            biggest_score = score
+            best_list = [photo]
+        elif score == biggest_score:
+            best_list.append(photo)
+    algorithm.photo = choice(best_list)
+    algorithm.save()
+
+
+# DONE
+# TODO: REFACTOR
 def attribute_weights_on_test_sample_algorithm(user_model_instance, algorithm):
     selections = SelectionModel.objects.filter(user__exact=user_model_instance)
     # photos_ranked = [0] * 40
@@ -145,6 +160,8 @@ def attribute_weights_on_test_sample_algorithm(user_model_instance, algorithm):
     algorithm.save()
 
 
+# DONE
+# TODO: REFACTOR
 def exponential_attribute_weights_on_test_sample_algorithm(user_model_instance,
                                                            algorithm):
     selections = SelectionModel.objects.filter(user__exact=user_model_instance)
@@ -182,3 +199,13 @@ def exponential_attribute_weights_on_test_sample_algorithm(user_model_instance,
             best_list.append(photo)
     algorithm.photo = choice(best_list)
     algorithm.save()
+
+
+# TODO
+def average_landscape(user_model_instance, algorithm):
+    pass
+
+
+# TODO
+def eawots_average_landscape(user_model_instance, algorithm):
+    pass

@@ -7,11 +7,9 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from Licencjat.settings import STATICFILES_DIRS
 from Models.models import PhotoModel, UserModel, SelectionModel, AlgorithmModel
+from Pages import algorithms
 from .apps import get_client_ip
-from .algorithms import linear_adding_algorithm, \
-    exponential_adding_algorithm, selection_average_algorithm, \
-    average_human_offset_algorithm, attribute_weights_on_test_sample_algorithm, \
-    exponential_attribute_weights_on_test_sample_algorithm
+
 
 def homepageView(request, *args, **kwargs):
     user_ip = get_client_ip(request)
@@ -54,6 +52,7 @@ def homepageView(request, *args, **kwargs):
         return redirect("results")
 
 
+# TODO: REFACTOR
 def resultsView(request, *args, **kwargs):
     user_ip = get_client_ip(request)
     context = {}
@@ -69,22 +68,32 @@ def resultsView(request, *args, **kwargs):
             AlgorithmModel.objects.create(user=user_model_instance, type=x[0])
     if not user_model_instance.has_finished_results:
         algorithm = \
-        AlgorithmModel.objects.filter(user__exact=user_model_instance,
-                                      selection=None)[
-            0]
+            AlgorithmModel.objects.filter(user__exact=user_model_instance,
+                                          selection=None)[
+                0]
         if algorithm.type == '1' and algorithm.photo is None:
-            linear_adding_algorithm(user_model_instance, algorithm)
+            algorithms.linear_adding_algorithm(user_model_instance, algorithm)
         elif algorithm.type == '2' and algorithm.photo is None:
-            exponential_adding_algorithm(user_model_instance, algorithm)
+            algorithms.exponential_adding_algorithm(user_model_instance,
+                                                    algorithm)
         elif algorithm.type == '3' and algorithm.photo is None:
-            selection_average_algorithm(user_model_instance, algorithm)
+            algorithms.selection_average_algorithm(user_model_instance,
+                                                   algorithm)
         elif algorithm.type == '4' and algorithm.photo is None:
-            average_human_offset_algorithm(user_model_instance, algorithm)
+            algorithms.average_human_offset_algorithm(user_model_instance,
+                                                      algorithm)
         elif algorithm.type == '5' and algorithm.photo is None:
-            attribute_weights_on_test_sample_algorithm(user_model_instance,
-                                                       algorithm)
+            algorithms.attribute_weights_on_test_sample_algorithm(
+                user_model_instance,
+                algorithm)
         elif algorithm.type == '6' and algorithm.photo is None:
-            exponential_attribute_weights_on_test_sample_algorithm(
+            algorithms.exponential_attribute_weights_on_test_sample_algorithm(
+                user_model_instance, algorithm)
+        elif algorithm.type == '7' and algorithm.photo is None:
+            algorithms.average_landscape(
+                user_model_instance, algorithm)
+        elif algorithm.type == '8' and algorithm.photo is None:
+            algorithms.eawots_average_landscape(
                 user_model_instance, algorithm)
         if request.method == 'POST':
             if 'likebutton' in request.POST:
@@ -102,18 +111,29 @@ def resultsView(request, *args, **kwargs):
                 AlgorithmModel.objects.filter(user__exact=user_model_instance,
                                               selection=None)[0]
             if algorithm.type == '1' and algorithm.photo is None:
-                linear_adding_algorithm(user_model_instance, algorithm)
+                algorithms.linear_adding_algorithm(user_model_instance,
+                                                   algorithm)
             elif algorithm.type == '2' and algorithm.photo is None:
-                exponential_adding_algorithm(user_model_instance, algorithm)
+                algorithms.exponential_adding_algorithm(user_model_instance,
+                                                        algorithm)
             elif algorithm.type == '3' and algorithm.photo is None:
-                selection_average_algorithm(user_model_instance, algorithm)
+                algorithms.selection_average_algorithm(user_model_instance,
+                                                       algorithm)
             elif algorithm.type == '4' and algorithm.photo is None:
-                average_human_offset_algorithm(user_model_instance, algorithm)
+                algorithms.average_human_offset_algorithm(user_model_instance,
+                                                          algorithm)
             elif algorithm.type == '5' and algorithm.photo is None:
-                attribute_weights_on_test_sample_algorithm(user_model_instance,
-                                                           algorithm)
+                algorithms.attribute_weights_on_test_sample_algorithm(
+                    user_model_instance,
+                    algorithm)
             elif algorithm.type == '6' and algorithm.photo is None:
-                exponential_attribute_weights_on_test_sample_algorithm(
+                algorithms.exponential_attribute_weights_on_test_sample_algorithm(
+                    user_model_instance, algorithm)
+            elif algorithm.type == '7' and algorithm.photo is None:
+                algorithms.average_landscape(
+                    user_model_instance, algorithm)
+            elif algorithm.type == '8' and algorithm.photo is None:
+                algorithms.eawots_average_landscape(
                     user_model_instance, algorithm)
         context["photo_loc"] = "img/" + algorithm.photo.file
         return render(request, "results.html", context)
