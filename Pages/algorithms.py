@@ -163,7 +163,8 @@ def attribute_weights_on_test_sample_algorithm(user_model_instance, algorithm):
 # DONE
 # TODO: REFACTOR
 def exponential_attribute_weights_on_test_sample_algorithm(user_model_instance,
-                                                           algorithm):
+                                                           algorithm,
+                                                           added_landmarks=False):
     selections = SelectionModel.objects.filter(user__exact=user_model_instance)
     # photos_ranked = [0] * 40
     plusone = [[0, 0]] * 40
@@ -194,6 +195,45 @@ def exponential_attribute_weights_on_test_sample_algorithm(user_model_instance,
                           minusone[x][1])
         if score > biggest_score:
             biggest_score = score
+            if added_landmarks:
+                if len(best_list) == 100:
+                    best_list.pop(0)
+                best_list.append(photo)
+            else:
+                best_list = [photo]
+
+        elif score == biggest_score:
+            if len(best_list) == 100:
+                best_list.pop(0)
+            best_list.append(photo)
+    if added_landmarks:
+        return best_list
+    algorithm.photo = choice(best_list)
+    algorithm.save()
+
+
+# DONE
+# TODO: REFACTOR
+def average_landmarks(user_model_instance, algorithm, __photos=PHOTOS):
+    selections = SelectionModel.objects.filter(user__exact=user_model_instance)
+    __average_landmarks = [0] * 10
+    liked = 0
+    for selection in selections:
+        if selection.selection:
+            __average_landmarks = [x + y for x, y in zip(__average_landmarks,
+                                                         selection.photo.get_landmarks())]
+            liked += 1
+    if liked > 0:
+        for i in range(len(__average_landmarks)):
+            __average_landmarks[i] /= liked
+    best_list = []
+    biggest_score = 1000000000
+    for photo in __photos:
+        score = sum(
+            [abs(x - y) for x, y in
+             zip(__average_landmarks, photo.get_landmarks())])
+        if score < biggest_score:
+            biggest_score = score
             best_list = [photo]
         elif score == biggest_score:
             best_list.append(photo)
@@ -201,11 +241,9 @@ def exponential_attribute_weights_on_test_sample_algorithm(user_model_instance,
     algorithm.save()
 
 
-# TODO
-def average_landscape(user_model_instance, algorithm):
-    pass
-
-
-# TODO
-def eawots_average_landscape(user_model_instance, algorithm):
-    pass
+# DONE
+# TODO: REFACTOR
+def eawots_average_landmarks(user_model_instance, algorithm):
+    eawots_photos = exponential_attribute_weights_on_test_sample_algorithm(
+        user_model_instance, algorithm, added_landmarks=True)
+    average_landmarks(user_model_instance, algorithm, __photos=eawots_photos)

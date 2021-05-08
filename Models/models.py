@@ -11,8 +11,8 @@ class AlgorithmModel(models.Model):
         ("4", "AverageHumanOffset"),
         ("5", "AttributeWeightsOnTestSample"),
         ("6", "ExponentialAttributeWeightsOnTestSample"),
-        ("7", "AverageLandscape"),
-        ("8", "E.A.W.O.T.S.-AverageLandscape")
+        ("7", "AverageLandmarks"),
+        ("8", "E.A.W.O.T.S.-AverageLandmarks")
     )
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey('UserModel', on_delete=models.CASCADE)

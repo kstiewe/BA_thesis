@@ -90,10 +90,10 @@ def resultsView(request, *args, **kwargs):
             algorithms.exponential_attribute_weights_on_test_sample_algorithm(
                 user_model_instance, algorithm)
         elif algorithm.type == '7' and algorithm.photo is None:
-            algorithms.average_landscape(
+            algorithms.average_landmarks(
                 user_model_instance, algorithm)
         elif algorithm.type == '8' and algorithm.photo is None:
-            algorithms.eawots_average_landscape(
+            algorithms.eawots_average_landmarks(
                 user_model_instance, algorithm)
         if request.method == 'POST':
             if 'likebutton' in request.POST:
@@ -130,10 +130,10 @@ def resultsView(request, *args, **kwargs):
                 algorithms.exponential_attribute_weights_on_test_sample_algorithm(
                     user_model_instance, algorithm)
             elif algorithm.type == '7' and algorithm.photo is None:
-                algorithms.average_landscape(
+                algorithms.average_landmarks(
                     user_model_instance, algorithm)
             elif algorithm.type == '8' and algorithm.photo is None:
-                algorithms.eawots_average_landscape(
+                algorithms.eawots_average_landmarks(
                     user_model_instance, algorithm)
         context["photo_loc"] = "img/" + algorithm.photo.file
         return render(request, "results.html", context)
