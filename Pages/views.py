@@ -1,5 +1,6 @@
 from random import choice, sample
 
+from django.contrib.auth.decorators import login_required
 from django.core.files import File
 from django.db.models import QuerySet
 from django.shortcuts import render, redirect
@@ -9,7 +10,7 @@ from Licencjat.settings import STATICFILES_DIRS
 from Models.models import PhotoModel, UserModel, SelectionModel, AlgorithmModel
 from Pages import algorithms
 from .apps import get_client_ip
-
+from numpy import zeros
 
 def homepageView(request, *args, **kwargs):
     user_ip = get_client_ip(request)
@@ -162,3 +163,31 @@ def mealsView(request, *args, **kwargs):
         meal_data.set_landmarks(land_list[x])
         meal_data.save()
     return redirect("home")
+
+
+@login_required
+def chartView(request, *args, **kwargs):
+    labels = []
+    users = UserModel.objects.all()
+    for name in AlgorithmModel.TYPE_CHOICES:
+        labels.append(name)
+    all_to_add = []
+    for user in users:
+        algorithms = list(AlgorithmModel.objects.filter(user__exact=user))
+        good = True
+        for algorithm in algorithms:
+            if algorithm.selection is None:
+                good = False
+        if good:
+            all_to_add.append(algorithms)
+    data = list(zeros(len(labels)))
+    for user_sel_set in all_to_add:
+        for i, alg in enumerate(user_sel_set):
+            if alg.selection:
+                data[i] += 1
+    data = [(x / len(all_to_add)) * 100 for x in data]
+    print(data)
+    return render(request, 'charts.html', {
+        'labels': labels,
+        'data': data,
+    })
