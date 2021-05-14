@@ -173,12 +173,8 @@ def chartView(request, *args, **kwargs):
         labels.append(name)
     all_to_add = []
     for user in users:
-        algorithms = list(AlgorithmModel.objects.filter(user__exact=user))
-        good = True
-        for algorithm in algorithms:
-            if algorithm.selection is None:
-                good = False
-        if good:
+        if user.has_finished_results:
+            algorithms = list(AlgorithmModel.objects.filter(user__exact=user))
             all_to_add.append(algorithms)
     data = list(zeros(len(labels)))
     for user_sel_set in all_to_add:
@@ -187,7 +183,6 @@ def chartView(request, *args, **kwargs):
                 data[i] += 1
     data_raw = data
     data = [(x / len(all_to_add)) * 100 for x in data]
-    print(data)
     return render(request, 'charts.html', {
         'UniqueValidUsers': len(all_to_add),
         'DataRaw': data_raw,
