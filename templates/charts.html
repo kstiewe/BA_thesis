@@ -1,7 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div id="container" style="width: 75%;">
+<div class="app-wrapper">
+  <div class="text-section">
+    <h1> Unique Valid Users: {{ UniqueValidUsers }} </h1>
+    <h2> Raw Data: {{ DataRaw }} </h2>
+  </div>
+
+
+  <div id="chartcontainer" style="width: 75%;">
     <canvas id="pie-chart"></canvas>
 </div>
 
@@ -32,5 +39,5 @@
 
 
 </script>
-
+</div>
 {% endblock %}

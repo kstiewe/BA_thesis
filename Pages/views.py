@@ -185,9 +185,12 @@ def chartView(request, *args, **kwargs):
         for i, alg in enumerate(user_sel_set):
             if alg.selection:
                 data[i] += 1
+    data_raw = data
     data = [(x / len(all_to_add)) * 100 for x in data]
     print(data)
     return render(request, 'charts.html', {
+        'UniqueValidUsers': len(all_to_add),
+        'DataRaw': data_raw,
         'labels': labels,
         'data': data,
     })
