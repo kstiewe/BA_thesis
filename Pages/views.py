@@ -12,6 +12,7 @@ from Pages import algorithms
 from .apps import get_client_ip
 from numpy import zeros
 
+
 def homepageView(request, *args, **kwargs):
     user_ip = get_client_ip(request)
     context = {}
@@ -116,34 +117,39 @@ def resultsView(request, *args, **kwargs):
                     user_photos[i] = "img/" + alg.photo.file
                 context["liked_list"] = user_photos
                 return render(request, "thankyou.html", context)
-            algorithm = \
-                AlgorithmModel.objects.filter(user__exact=user_model_instance,
-                                              selection=None)[0]
-            if algorithm.type == '1' and algorithm.photo is None:
-                algorithms.linear_adding_algorithm(user_model_instance,
-                                                   algorithm)
-            elif algorithm.type == '2' and algorithm.photo is None:
-                algorithms.exponential_adding_algorithm(user_model_instance,
-                                                        algorithm)
-            elif algorithm.type == '3' and algorithm.photo is None:
-                algorithms.selection_average_algorithm(user_model_instance,
+            try:
+                algorithm = \
+                    AlgorithmModel.objects.filter(
+                        user__exact=user_model_instance,
+                        selection=None)[0]
+                if algorithm.type == '1' and algorithm.photo is None:
+                    algorithms.linear_adding_algorithm(user_model_instance,
                                                        algorithm)
-            elif algorithm.type == '4' and algorithm.photo is None:
-                algorithms.average_human_offset_algorithm(user_model_instance,
-                                                          algorithm)
-            elif algorithm.type == '5' and algorithm.photo is None:
-                algorithms.attribute_weights_on_test_sample_algorithm(
-                    user_model_instance,
-                    algorithm)
-            elif algorithm.type == '6' and algorithm.photo is None:
-                algorithms.exponential_attribute_weights_on_test_sample_algorithm(
-                    user_model_instance, algorithm)
-            elif algorithm.type == '7' and algorithm.photo is None:
-                algorithms.average_landmarks(
-                    user_model_instance, algorithm)
-            elif algorithm.type == '8' and algorithm.photo is None:
-                algorithms.eawots_average_landmarks(
-                    user_model_instance, algorithm)
+                elif algorithm.type == '2' and algorithm.photo is None:
+                    algorithms.exponential_adding_algorithm(user_model_instance,
+                                                            algorithm)
+                elif algorithm.type == '3' and algorithm.photo is None:
+                    algorithms.selection_average_algorithm(user_model_instance,
+                                                           algorithm)
+                elif algorithm.type == '4' and algorithm.photo is None:
+                    algorithms.average_human_offset_algorithm(
+                        user_model_instance,
+                        algorithm)
+                elif algorithm.type == '5' and algorithm.photo is None:
+                    algorithms.attribute_weights_on_test_sample_algorithm(
+                        user_model_instance,
+                        algorithm)
+                elif algorithm.type == '6' and algorithm.photo is None:
+                    algorithms.exponential_attribute_weights_on_test_sample_algorithm(
+                        user_model_instance, algorithm)
+                elif algorithm.type == '7' and algorithm.photo is None:
+                    algorithms.average_landmarks(
+                        user_model_instance, algorithm)
+                elif algorithm.type == '8' and algorithm.photo is None:
+                    algorithms.eawots_average_landmarks(
+                        user_model_instance, algorithm)
+            except:
+                pass
         context["photo_loc"] = "img/" + algorithm.photo.file
         return render(request, "results.html", context)
     else:
