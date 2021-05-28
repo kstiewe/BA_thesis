@@ -8,5 +8,15 @@
             To już wszystko. Dane zebrane z Twoją pomocą pozwolą mi na ukończenie pracy licencjackiej.
         </p>
     </div>
+    <div class="container">
+        <div class="wrapper">
+            {% for photo_loc in liked_list %}
+            <div class="image-container">
+                <img src="{% static photo_loc %}" alt="" id="image"/>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
 </div>
 {% endblock %}

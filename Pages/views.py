@@ -103,10 +103,18 @@ def resultsView(request, *args, **kwargs):
                 algorithm.selection = False
             algorithm.save()
             if not AlgorithmModel.objects.filter(
-                    user__exact=user_model_instance,
-                    selection=None):
+                    user__exact=user_model_instance):
                 user_model_instance.has_finished_results = True
                 user_model_instance.save()
+                user_photos = AlgorithmModel.objects.filter(
+                    user__exact=user_model_instance)
+
+                user_photos = AlgorithmModel.objects.filter(
+                    user__exact=user_model_instance)
+                user_photos = list(user_photos)
+                for i, alg in enumerate(user_photos):
+                    user_photos[i] = "img/" + alg.photo.file
+                context["liked_list"] = user_photos
                 return render(request, "thankyou.html", context)
             algorithm = \
                 AlgorithmModel.objects.filter(user__exact=user_model_instance,
@@ -139,6 +147,12 @@ def resultsView(request, *args, **kwargs):
         context["photo_loc"] = "img/" + algorithm.photo.file
         return render(request, "results.html", context)
     else:
+        user_photos = AlgorithmModel.objects.filter(
+            user__exact=user_model_instance)
+        user_photos = list(user_photos)
+        for i, alg in enumerate(user_photos):
+            user_photos[i] = "img/" + alg.photo.file
+        context["liked_list"] = user_photos
         return render(request, "thankyou.html", context)
 
 
