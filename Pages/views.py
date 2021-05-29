@@ -212,6 +212,7 @@ def chartView(request, *args, **kwargs):
     })
 
 
+@login_required
 def fixView(request, *args, **kwargs):
     users = UserModel.objects.filter(has_finished=True, selection_count=100,
                                      has_finished_results=False)
