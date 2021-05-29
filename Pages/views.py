@@ -149,7 +149,8 @@ def resultsView(request, *args, **kwargs):
                     algorithms.eawots_average_landmarks(
                         user_model_instance, algorithm)
             except:
-                pass
+                user_model_instance.has_finished_results = True
+                user_model_instance.save()
         context["photo_loc"] = "img/" + algorithm.photo.file
         return render(request, "results.html", context)
     else:
@@ -209,3 +210,16 @@ def chartView(request, *args, **kwargs):
         'labels': labels,
         'data': data,
     })
+
+
+def fixView(request, *args, **kwargs):
+    users = UserModel.objects.filter(has_finished=True, selection_count=100,
+                                     has_finished_results=False)
+    users = list(users)
+    for user in users:
+        try:
+            AlgorithmModel.objects.filter(user__exact=user, selection=None)[0]
+        except:
+            user.has_finished_results = True
+            user.save()
+    return redirect("home")
